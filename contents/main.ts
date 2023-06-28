@@ -1,6 +1,7 @@
 import type { PlasmoCSConfig } from "plasmo";
 import { Storage } from "@plasmohq/storage"
 import { sliderSelector } from "~util/constants";
+import { waitForElementToDisplay } from "~util";
 
 const storage = new Storage();
 
@@ -10,9 +11,9 @@ async function onNewUser() {
   console.log(
     `huy User: ${user}`
   );
+  await setInitialVolumeSettingForUser();
 }
 
-onNewUser();
 console.log("huy onmessage init");
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -37,11 +38,9 @@ async function updateUserVolume(user, volume) {
 }
 
 function subscribeToVolumeSlider() {
-  let input = document.querySelector(sliderSelector);
-
   window.document.body.addEventListener('change', function(event) {
     console.log("huy chznge event");
-    if (event.target instanceof HTMLInputElement) {
+    if (event.target instanceof HTMLInputElement && event.target.matches(sliderSelector)) {
       let v = event.target.value;
       console.log("huy current volume", v);
       updateUserVolume(user, v).then(() => {
@@ -49,6 +48,18 @@ function subscribeToVolumeSlider() {
       });
     }
   });
+}
+
+async function setInitialVolumeSettingForUser() {
+  let el = await waitForElementToDisplay(sliderSelector, 200, 5000);
+  if (el) {
+    let data: any = await storage.get("volumes");
+    if (!data) data = {};
+    if (!data[user] && el.value) {
+      console.log(`huy set initial volume for ${user}: ${el.value}`);
+      await updateUserVolume(user, el.value);
+    }
+  }
 }
 
 subscribeToVolumeSlider();
