@@ -1,8 +1,8 @@
 {
   "name": "twitch-taren",
-  "displayName": "Twitch taren",
+  "displayName": "Twitch Taren",
   "version": "0.0.1",
-  "description": "A basic Plasmo extension.",
+  "description": "A chrome extension to remember and restore Twitch sound volume per streamer",
   "author": "mykola.sharshov",
   "packageManager": "npm@6.14.18",
   "scripts": {
@@ -11,8 +11,9 @@
     "package": "plasmo package"
   },
   "dependencies": {
-    "@plasmohq/messaging": "^0.4.0",
     "@plasmohq/storage": "^1.6.1",
+    "classnames": "^2.3.2",
+    "lodash": "^4.17.21",
     "plasmo": "0.76.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
