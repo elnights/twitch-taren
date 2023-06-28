@@ -29,12 +29,17 @@ function IndexPopup() {
     queryCurrentStreamers().then(setCurrentStreamers);
   });
 
-  let savedStreamers = Object.entries(volumes).map(([user, volume]) => ({
+  let savedStreamers = Object.entries(volumes).map(([user, volume]) => {
+    let isTheGirl = user === 'hotagirl';
+    return {
       user,
+      userDisplay: isTheGirl ? 'Твоя любовь' : user,
       volume,
       isCurrent: currentStreamers[user],
+      isTheGirl,
       sortOrder: currentStreamers[user] ? 1 : 2
-  }));
+    }
+  });
 
   let sortedStreamers = sortBy(savedStreamers, ['sortOrder', 'user']);
 
@@ -51,14 +56,17 @@ function IndexPopup() {
       </h2>
       <table>
         <tbody>
-          {sortedStreamers.map(({user, volume, isCurrent}) => (
+          {sortedStreamers.map(({user, userDisplay, volume, isCurrent, isTheGirl}) => (
             <tr
               key={user}
             >
               <td
-                className={classNames({'is-current': isCurrent})}
+                className={classNames({
+                  'is-current': isCurrent,
+                  'is-the-girl': isTheGirl
+                })}
               >
-                {user}
+                {userDisplay}
               </td>
               <td>{Math.round(volume.toString() * 100) + '%'}</td>
             </tr>
